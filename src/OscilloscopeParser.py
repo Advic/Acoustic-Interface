@@ -22,6 +22,13 @@ class DataPoint():
         self.__data = data
 
 class OscilloscopeData():
+    #===========================================================================
+    # @param directory: directory containing this file (for grouping)
+    # @param filename: filnemae containing this data
+    # @param propertyMap: dictionary of file properties, keyed on the property
+    #    name (leftmost column of the oscilloscope data files)
+    # @param data: list of time-value pairs of the actual AI data
+    #===========================================================================
     def __init__(self, directory, filename, propertyMap, data):
         self.__directory = directory
         self.__filename = filename
@@ -31,6 +38,9 @@ class OscilloscopeData():
     def getProperty(self, propertyName):
         return self.__property_map[propertyName]
 
+    def getData(self):
+        return self.__data
+
 def isfloat(value):
     try:
         float(value)
@@ -38,6 +48,11 @@ def isfloat(value):
     except ValueError:
         return False
 
+#===============================================================================
+# @param dir: Full path of the directory ocntaining the Acoustic-Interface Data/
+#        default is ..\Data
+# @return: A list of OscilloscopeData objects (one for each file)
+#===============================================================================
 def loadDataFromFile(dir):
     data = list()
     for dataFolder in os.listdir(dir):
@@ -55,6 +70,7 @@ def loadDataFromFile(dir):
             voltages = [float(voltage) for voltage in nptranspose[4]]
             timevoltage = zip(times, voltages)
             data.append(OscilloscopeData(dataFolder, dataFile, properties, timevoltage))
+    return data
 
 if __name__ == '__main__':
     DATA_DIRECTORY = os.path.join("..", "Data")
